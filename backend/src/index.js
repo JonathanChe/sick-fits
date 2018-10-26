@@ -16,6 +16,6 @@ server.start({
       origin: process.env.FRONTEND_URL,
     }
   }
-}), deets => {
-  console.log(`Server is now running on port ${deets.ports}`)
-}
+}, deets => {
+  console.log(`Server is now running on port ${deets.port}`)
+})
