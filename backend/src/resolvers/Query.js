@@ -3,6 +3,7 @@ const { forwardTo } = require('prisma-binding'); // prisma binding gives us abil
 const Query = {
   // anytime someone queries for items we're just going to forward that to db
   items: forwardTo('db'),
+  item: forwardTo('db'),
 
   // unncessary if exact same as prisma, see above forwardTo
   // async items(parent, args, ctx, info) {

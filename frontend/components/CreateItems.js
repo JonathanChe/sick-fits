@@ -45,6 +45,31 @@ export default class CreateItems extends Component {
     this.setState({ [name]: val })
   }
 
+  uploadFile = async event => {
+    // pull the file out of selection
+    const files = e.target.files;
+    // use form data api to prep data 
+    const data = new FormData();
+    // append first file user selected
+    data.append('file', files[0]);
+    // add upload preset, need for cloudinary
+    data.append('upload_preset', 'sickfits');
+
+    // hit cloudinary api
+    const res = await fetch('https://api.cloudinary.com/v1_1/jonathanche/image/upload', {
+      method: 'POST', 
+      body: data
+    });
+    // parse data that comes back
+    const file = await res.json();
+    // put data into state
+    this.setState({
+      image: file.secure_url,
+      // eager is a secondary transform that happens
+      largeImage: file.eager[0].secure_url
+    })
+  }
+
   render() {
     return (
       <Mutation mutation={CREATE_ITEM_MUTATION} varaibles={this.state}>
@@ -63,6 +88,20 @@ export default class CreateItems extends Component {
             <ErrorMessages error={error} />
 
             <fieldset disabled={loading} aria-busy={loading}>
+
+            <label htmlFor="file"> 
+              Image
+              <input 
+                type="file" 
+                id="file" 
+                name="file" 
+                placeholder="Upload an image" 
+                required 
+                value={this.state.image}
+                onChange={this.uploadFile}
+                />
+              </label>
+
               <label htmlFor="title"> 
               Title
               <input 
