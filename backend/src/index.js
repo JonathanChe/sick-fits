@@ -11,10 +11,8 @@ const server = createServer();
 server.start({
   // only want endpoint visited by approved personnel
   cors: {
-    credentials: {
-      credentials: true, 
-      origin: process.env.FRONTEND_URL,
-    }
+    credentials: true,
+    origin: process.env.FRONTEND_URL,
   }
 }, deets => {
   console.log(`Server is now running on port ${deets.port}`)
