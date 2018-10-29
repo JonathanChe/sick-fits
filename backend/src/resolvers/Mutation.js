@@ -4,7 +4,6 @@ const Mutations = {
 
     // here is where we interface with prisma database
     const item = await ctx.db.mutation.createItem({ // refers to context defined in createServer.js, // accesses db from ctx
-      // 
 
       data: { // refers to schema.graphql and how the api created takes in an argument data
         ...args // because all of the fields being pulled in need to go directly to the item, we can just do ...args instead of manually putting each key/val in. 
@@ -33,8 +32,18 @@ const Mutations = {
       // second arg
       info // what it needs to return
     );
-  } 
-
+  }, 
+  
+  async deleteItem(parent, args, ctx, info) {
+    const where = { id: args.id };
+    // 1. find the item 
+    const item = await ctx.db.query.item({ where }, `{id title}`); // passing in raw graphql
+    // 2. check if they own that item or have the permissions
+    // TODO
+    // 3. delete
+    return ctx.db.mutation.deleteItem({ where }, info);
+  }
+  
 };
 
 module.exports = Mutations;
