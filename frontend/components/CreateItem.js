@@ -30,7 +30,7 @@ export const CREATE_ITEM_MUTATION = gql`
   }
 ` 
 
-export default class CreateItem extends Component {
+export default class CreateItems extends Component {
   state = {
     title: '', 
     description: '',
@@ -46,6 +46,7 @@ export default class CreateItem extends Component {
   };
 
   uploadFile = async event => {
+    console.log('uploading file...')
     // pull the file out of selection
     const files = event.target.files;
     // use form data api to prep data 
@@ -62,7 +63,6 @@ export default class CreateItem extends Component {
     });
     // parse data that comes back
     const file = await res.json();
-
     // put data into state
     this.setState({
       image: file.secure_url,
@@ -73,29 +73,23 @@ export default class CreateItem extends Component {
 
   render() {
     return (
-      <Mutation 
-        mutation={CREATE_ITEM_MUTATION} 
-        variables={this.state}
-        refetchQueries={}
-      >
+      <Mutation mutation={CREATE_ITEM_MUTATION} variables={this.state}>
         {(createItem, { loading, error }) => (
-          <Form
-            data-test="form"
-            onSubmit={async e => {
-              // Stop the form from submitting
-              e.preventDefault();
-              // call the mutation
-              const res = await createItem();
-              // change them to the single item page
-              console.log(res);
-              Router.push({
-                pathname: '/item',
-                query: { id: res.data.createItem.id },
-              });
-            }}
-          >
+          <Form onSubmit={async e => {
+            // stop the form from submitting
+            e.preventDefault()
+            // call the mutation
+            const res = await createItem();
+            // change them to the single item page 
+            Router.push({
+              pathname: '/item',
+              query: { id: res.data.createItem.id }
+            })
+          }}> 
             <ErrorMessages error={error} />
+
             <fieldset disabled={loading} aria-busy={loading}>
+
             <label htmlFor="file"> 
               Image
               <input 
@@ -108,48 +102,49 @@ export default class CreateItem extends Component {
                 />
               </label>
 
-              <label htmlFor="title">
-                Title
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  placeholder="Title"
-                  required
-                  value={this.state.title}
-                  onChange={this.handleChange}
+              <label htmlFor="title"> 
+              Title
+              <input 
+                type="text" 
+                id="title" 
+                name="title" 
+                placeholder="Title" 
+                required 
+                value={this.state.title}
+                onChange={this.handleChange}
                 />
               </label>
 
-              <label htmlFor="price">
-                Price
-                <input
-                  type="number"
-                  id="price"
-                  name="price"
-                  placeholder="Price"
-                  required
-                  value={this.state.price}
-                  onChange={this.handleChange}
+              <label htmlFor="price"> 
+              Price
+              <input 
+                type="number" 
+                id="price" 
+                name="price" 
+                placeholder="Price" 
+                required 
+                value={this.state.price}
+                onChange={this.handleChange}
                 />
               </label>
 
-              <label htmlFor="description">
-                Description
-                <textarea
-                  id="description"
-                  name="description"
-                  placeholder="Enter A Description"
-                  required
-                  value={this.state.description}
-                  onChange={this.handleChange}
+              <label htmlFor="description"> 
+              Description
+              <textarea 
+                id="description" 
+                name="description" 
+                placeholder="Enter a Description" 
+                required 
+                value={this.state.description}
+                onChange={this.handleChange}
                 />
               </label>
+
               <button type="submit">Submit</button>
             </fieldset>
           </Form>
         )}
-      </Mutation>
-    );
+    </Mutation>
+    )
   }
 }
