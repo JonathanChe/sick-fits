@@ -45,7 +45,7 @@ export default class Items extends Component {
             <ItemsList>
               {data.items.map(item => <Item item={item} key={item.id}/>)}
             </ItemsList>
-            )
+            );
           }}
         </Query>
       </Center>
