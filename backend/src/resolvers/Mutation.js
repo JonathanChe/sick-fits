@@ -1,3 +1,6 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const Mutations = {
   async createItem(parent, args, ctx, info) { // info holds the actual query
     // TODO: Check if they are logged in
@@ -36,14 +39,40 @@ const Mutations = {
   
   async deleteItem(parent, args, ctx, info) {
     const where = { id: args.id };
-    // 1. find the item 
-    const item = await ctx.db.query.item({ where }, `{id title}`); // passing in raw graphql
-    // 2. check if they own that item or have the permissions
+    // find the item 
+    const item = await ctx.db.query.item({ where }, `{id title}`); // passing in raw graphql query
+    // check if they own that item or have the permissions
     // TODO
-    // 3. delete
+    // delete
     return ctx.db.mutation.deleteItem({ where }, info);
-  }
+  },
   
+  async signup(parent, args, ctx, info) {
+    // lowercase incoming emails
+    args.email = args.email.toLowerCase();
+    // hash password
+    const password = await bcrypt.hash(args.password, 10);
+    // create user in DB
+    const user = await ctx.db.mutation.createUser({
+      data: {
+        ...args,
+        password, // do not store plain text password, override with hash
+        permissions: { set: ['USER'] }
+
+      }
+    }, info); // info is being returned to client
+
+    // create JWT 
+    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+    // set the JWT as a cookie on the response
+    ctx.response.cookie('token', token, {
+      httpOnly: true, // cannot access cookie via JS 
+      maxAge: 1000 * 60 * 60 * 24 * 365
+    });
+    // return user to the browser
+    return user;
+  }
+
 };
 
 module.exports = Mutations;

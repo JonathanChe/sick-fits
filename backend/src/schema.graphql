@@ -5,6 +5,8 @@ type Mutation {
   createItem(title: String, description: String, price: Int, image: String, largeImage: String): Item!
   updateItem(id: ID!, title: String, description: String, price: Int): Item!
   deleteItem(id: ID!): Item
+  # takes in the following arguments and spits out a user
+  signup(email: String!, password: String!, name: String!): User!
 }
 
 type Query {
