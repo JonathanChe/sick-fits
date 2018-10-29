@@ -37,17 +37,18 @@ export default class CreateItems extends Component {
     image: '', 
     largeImage: '', 
     price: 0
-  }
+  };
 
   handleChange = event => {
     const { name, type, value } = event.target;
     const val = type === 'number' ? parseFloat(value) : value;
     this.setState({ [name]: val })
-  }
+  };
 
   uploadFile = async event => {
+    console.log('uploading file...')
     // pull the file out of selection
-    const files = e.target.files;
+    const files = event.target.files;
     // use form data api to prep data 
     const data = new FormData();
     // append first file user selected
@@ -68,17 +69,17 @@ export default class CreateItems extends Component {
       // eager is a secondary transform that happens
       largeImage: file.eager[0].secure_url
     })
-  }
+  };
 
   render() {
     return (
-      <Mutation mutation={CREATE_ITEM_MUTATION} varaibles={this.state}>
+      <Mutation mutation={CREATE_ITEM_MUTATION} variables={this.state}>
         {(createItem, { loading, error }) => (
           <Form onSubmit={async e => {
             // stop the form from submitting
             e.preventDefault()
             // call the mutation
-            const res  = await createItem();
+            const res = await createItem();
             // change them to the single item page 
             Router.push({
               pathname: '/item',
@@ -97,7 +98,6 @@ export default class CreateItems extends Component {
                 name="file" 
                 placeholder="Upload an image" 
                 required 
-                value={this.state.image}
                 onChange={this.uploadFile}
                 />
               </label>
