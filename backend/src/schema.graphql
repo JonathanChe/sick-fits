@@ -1,6 +1,6 @@
 # import * from './generated/prisma.graphql'
 """ above imports what will be used below """
- 
+
 type Mutation {
   createItem(title: String, description: String, price: Int, image: String, largeImage: String): Item!
   updateItem(id: ID!, title: String, description: String, price: Int): Item!
@@ -11,4 +11,5 @@ type Query {
   items: [Item]!
   # ItemWhereUniqueInput comes from prisma file, CRUD API's already created
   item(where: ItemWhereUniqueInput!): Item
+  itemsConnection(where: ItemWhereInput): ItemConnection!
 }

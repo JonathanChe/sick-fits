@@ -3,6 +3,7 @@ import { Query } from 'react-apollo'; // allows us to query data directly into t
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import Item from '../components/Item'
+import Pagination from './Pagination';
 
 // name your queries
 // exporting for sharing query amongst components and for testing
@@ -35,6 +36,7 @@ export default class Items extends Component {
   render() {
     return (
       <Center>
+        <Pagination page={this.props.page}></Pagination>
         <p> Items </p>
         <Query query={ALL_ITEMS_QUERY}>
           {/* only child of a query component must be a function */}
@@ -48,6 +50,7 @@ export default class Items extends Component {
             );
           }}
         </Query>
+        <Pagination></Pagination>
       </Center>
     )
   }
