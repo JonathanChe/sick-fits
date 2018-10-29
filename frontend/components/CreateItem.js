@@ -63,11 +63,6 @@ export default class CreateItem extends Component {
     // parse data that comes back
     const file = await res.json();
 
-    console.log('checking file here ', file);
-    console.log('checking image here ', file.secure_url);
-    console.log('checking eager ', file.eager[0].secure_url)
-    console.log('checking state ', this.state)
-
     // put data into state
     this.setState({
       image: file.secure_url,
@@ -78,7 +73,11 @@ export default class CreateItem extends Component {
 
   render() {
     return (
-      <Mutation mutation={CREATE_ITEM_MUTATION} variables={this.state}>
+      <Mutation 
+        mutation={CREATE_ITEM_MUTATION} 
+        variables={this.state}
+        refetchQueries={}
+      >
         {(createItem, { loading, error }) => (
           <Form
             data-test="form"
