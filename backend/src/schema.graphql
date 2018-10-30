@@ -14,4 +14,5 @@ type Query {
   # ItemWhereUniqueInput comes from prisma file, CRUD API's already created
   item(where: ItemWhereUniqueInput!): Item
   itemsConnection(where: ItemWhereInput): ItemConnection!
+  me: User
 }
