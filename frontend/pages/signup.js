@@ -1,5 +1,9 @@
-import Signup from '../components/Signup';
+// npm imports
 import styled from 'styled-components';
+
+// rel path imports
+import Signup from '../components/Signup';
+import Signin from '../components/Signin';
 
 const Columns = styled.div`
   display: grid;
@@ -10,9 +14,8 @@ const Columns = styled.div`
 const SignupPage = props => {
   return (
     <Columns>
-      <Signup></Signup>
-      <Signup></Signup>
-      <Signup></Signup>
+      <Signup />
+      <Signin />
     </Columns>
   )
 }
