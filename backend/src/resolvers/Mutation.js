@@ -9,14 +9,19 @@ const { transport, makeANiceEmail } = require('../mail');
 
 const Mutations = {
   async createItem(parent, args, ctx, info) { // info holds the actual query
-    // TODO: Check if they are logged in
+    // Check if they are logged in
     if (!ctx.request.userId) throw new Error('You must be logged in to do that!');
-
 
     // here is where we interface with prisma database
     const item = await ctx.db.mutation.createItem({ // refers to context defined in createServer.js, // accesses db from ctx
 
       data: { // refers to schema.graphql and how the api created takes in an argument data
+        user: {
+          connect: {
+            // this is how we create a relationship between the Item and the user
+            id: ctx.request.userId
+          }
+        },
         ...args // because all of the fields being pulled in need to go directly to the item, we can just do ...args instead of manually putting each key/val in. 
       }
     }, info) // pass info so that the actual item is returned to us after we have created it.  
