@@ -10,6 +10,8 @@ const { transport, makeANiceEmail } = require('../mail');
 const Mutations = {
   async createItem(parent, args, ctx, info) { // info holds the actual query
     // TODO: Check if they are logged in
+    if (!ctx.request.userId) throw new Error('You must be logged in to do that!');
+
 
     // here is where we interface with prisma database
     const item = await ctx.db.mutation.createItem({ // refers to context defined in createServer.js, // accesses db from ctx
