@@ -6,21 +6,17 @@ import gql from 'graphql-tag';
 // rel path imports
 import Form from './styles/Form';
 import ErrorMessage from './ErrorMessage';
-import { CURRENT_USER_QUERY } from './User';
 
-const SIGNIN_MUTATION = gql`
-  mutation SIGNIN_MUTATION($email: String!, $password: String!) {
-    signin(email: $email, password: $password) {
-      id
-      email
-      name
+const REQUEST_RESET_MUTATION = gql`
+  mutation REQUEST_RESET_MUTATION($email: String!) {
+    requestReset(email: $email) {
+      message
     }
   }
 `;
 
-export default class Signin extends Component {
+export default class RequestReset extends Component {
   state = {
-    password: '',
     email: ''
   }
 
@@ -31,32 +27,25 @@ export default class Signin extends Component {
   render() {
     return (
       <Mutation 
-        mutation={SIGNIN_MUTATION} 
+        mutation={REQUEST_RESET_MUTATION} 
         variables={this.state}
-        refetchQueries={[{ query: CURRENT_USER_QUERY }]}
       >
-        {(Signin, { error, loading }) => {
+        {(reset, { error, loading }) => {
           return (
             <Form method="post" onSubmit={async e => {
               e.preventDefault();
-              await Signin(); // await in case of error so that set state will not get trigger
-              this.setState({ email: '', password: '' })
+              await reset(); 
+              this.setState({ email: '' })
             }}>
               <fieldset disabled={loading} aria-busy={loading}>
-                <h2>Sign into your account</h2>
+                <h2>Request a password reset</h2>
                 <ErrorMessage error={error}/>
 
                 <label htmlFor="email">
                   Email
                   <input type="email" name="email" placeholder="email" value={this.state.email} onChange={this.saveToState}/>
                 </label>
-
-                <label htmlFor="password">
-                  Password
-                  <input type="password" name="password" placeholder="password" value={this.state.password} onChange={this.saveToState}/>
-                </label>
-                
-                <button type="submit">Sign In</button>
+                <button type="submit">Request Reset</button>
               </fieldset>
             </Form>
           )

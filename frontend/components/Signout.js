@@ -5,9 +5,11 @@ import gql from 'graphql-tag';
 // rel path imports
 import { CURRENT_USER_QUERY } from './User';
 
-const SIGN_OUT_MUTATION = gql`
-  signout {
-    message
+export const SIGN_OUT_MUTATION = gql`
+  mutation SIGN_OUT_MUTATION {
+    signout {
+      message
+    }
   }
 `;
 
