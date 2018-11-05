@@ -1,10 +1,21 @@
 # import * from './generated/prisma.graphql'
 """ above imports what will be used below """
 
+type SuccessMessage {
+  message: String
+}
+
 type Mutation {
   createItem(title: String, description: String, price: Int, image: String, largeImage: String): Item!
   updateItem(id: ID!, title: String, description: String, price: Int): Item!
   deleteItem(id: ID!): Item
+  # takes in the following arguments and spits out a user
+  signup(email: String!, password: String!, name: String!): User!
+  signin(email: String!, password: String!): User!
+  signout: SuccessMessage
+  requestReset(email: String!): SuccessMessage
+  resetPassword(resetToken: String!, password: String!, confirmPassword: String!): User!
+  updatePermissions(permissions: [Permission], userId: ID!): User
 }
 
 type Query {
@@ -12,4 +23,13 @@ type Query {
   # ItemWhereUniqueInput comes from prisma file, CRUD API's already created
   item(where: ItemWhereUniqueInput!): Item
   itemsConnection(where: ItemWhereInput): ItemConnection!
+  me: User
+  users: [User]!
+}
+
+type User {
+  id: ID!
+  email: String!
+  name: String!
+  permissions: [Permission!]!
 }

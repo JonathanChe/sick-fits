@@ -36,7 +36,9 @@ export default class DeleteItem extends Component {
       >
       {(deleteItem, { error }) => (// destructring error to notify user that they cannot delete what they do not own
         <button onClick={() => {
-          if (confirm('Are you sure you want to delete this item?')) deleteItem();
+          if (confirm('Are you sure you want to delete this item?')) {
+            deleteItem().catch(err => alert(err.message));
+          }
         }}>
         {this.props.children}
         </button>
