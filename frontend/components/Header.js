@@ -1,19 +1,20 @@
-import Nav from './Nav';
+// npm imports
 import Link from 'next/link';
 import styled from 'styled-components';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 
+// rel path imports
+import Nav from './Nav';
+import Cart from './Cart';
+
 Router.onRouteChangeStart = () => {
-  console.log(('onRouteChangeStart triggered'))
   NProgress.start();
 }
 Router.onRouteChangeComplete = () => {
-  console.log(('onRouteChangeComplete triggered'))
   NProgress.done();
 }
 Router.onRouteChangeError = () => {
-  console.log(('onRouteChangeError triggered'))
   NProgress.done();
 }
 
@@ -71,6 +72,7 @@ const Header = () => (
     <div className="sub-bar">
       <p>Search</p>
     </div>
+    <Cart />
   </StyledHeader>
 )
 
