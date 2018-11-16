@@ -7,6 +7,7 @@ const { promisify } = require('util');
 // rel path imports
 const { transport, makeANiceEmail } = require('../mail');
 const { hasPermission } = require('../utils');
+const stripe = require('../stripe');
 
 const Mutations = {
   async createItem(parent, args, ctx, info) { // info holds the actual query
@@ -242,8 +243,71 @@ const Mutations = {
     if (cartItem.user.id !== ctx.request.userId) throw new Error('Does not belong to user');
     // delete cart item
     return ctx.db.mutation.deleteCartItem({ where: { id: args.id }}, info);
-  }
+  },
 
+  async createOrder(parent, args, ctx, info) {
+    // query the current user, make sure they are signed in
+    const { userId } = ctx.request;
+    if (!userId) throw new Error('You must be signed in to complete this order');
+    const user = await ctx.db.query({ where: { id: userId }}, 
+      `{
+        id 
+        name 
+        email 
+        cart { 
+          id 
+          quantity 
+          item { 
+            title 
+            price 
+            id 
+            description 
+            image
+            largeImage
+          }
+        }
+      }`);
+    // recalculate the total for the price
+    const amount = user.cart.reduce((tally, cartItem) => tally + cartItem.item.price * cartItem.quantity, 0);
+
+    // create the stripe charge, turn token into cash
+    const charge = await stripe.charges.create({
+      amount,
+      currency: 'USD',
+      source: args.token,
+    })
+
+    // convert the cartItems to OrderItems
+    const orderItems = user.cart.map(cartItem => {
+      const orderItem = {
+        ...cartItem.item,
+        quantity: cartItem.quantity,
+        user: { connect: { id: userId }},
+      };
+      // when making a shallow copy of the cartItem, we don't want the id so remove it
+      delete orderItem.id;
+      return orderItem;
+    });
+
+    // create the order
+    const order = await ctx.db.mutation.createOrder({
+      data: {
+        total: charge.amount,
+        charge: charge.id,
+        items: { create: orderItems },
+        user: { connect: { id: userId }}
+      }
+    });
+
+    // clean up - clear the users cart - delete the cart items
+    const cartItemIds = user.cart.map(cartItem => cartItem.id);
+    await ctx.db.mutation.deleteManyCartItems({ where: {
+      id_in: cartItemIds
+    }})
+
+    // return the order to the client
+    return order;
+  }
 };
 
 module.exports = Mutations;
