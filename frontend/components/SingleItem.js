@@ -8,7 +8,7 @@ import Head from 'next/head';
 // rel paths imports
 import Error from './ErrorMessage';
 
-const SingleItemStyles = styled.div`
+export const SingleItemStyles = styled.div`
   max-width: 1200px;
   margin: 2rem auto;
   box-shadow: ${props => props.theme.bs};
@@ -27,7 +27,7 @@ const SingleItemStyles = styled.div`
   }
 `
 
-const SINGLE_ITEM_QUERY = gql`
+export const SINGLE_ITEM_QUERY = gql`
   query SINGLE_ITEM_QUERY($id: ID!) {
     item(where: { id: $id }) {
       id
