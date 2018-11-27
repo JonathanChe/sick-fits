@@ -11,41 +11,43 @@ import { CURRENT_USER_QUERY } from '../components/User';
 const notSignedInMocks = [
   {
     request: { query: CURRENT_USER_QUERY },
-    result: { data: { me: null }},
-  }
+    result: { data: { me: null } },
+  },
 ];
 
-const signedInMock = [
+const signedInMocks = [
   {
     request: { query: CURRENT_USER_QUERY },
-    result: { data: { me: fakeUser() }},
-  }
+    result: { data: { me: fakeUser() } },
+  },
 ];
 
 describe('<PleaseSignIn/>', () => {
-  it('renders the sign in dialogue', async () => {
+  it('renders the sign in dialog to logged out users', async () => {
     const wrapper = mount(
       <MockedProvider mocks={notSignedInMocks}>
-        <PleaseSignIn/>
+        <PleaseSignIn />
       </MockedProvider>
     );
     await wait();
     wrapper.update();
     expect(wrapper.text()).toContain('Please Sign In before Continuing');
-    expect(wrapper.find('Signin')).exists().toBe(true);
+    const SignIn = wrapper.find('Signin');
+    expect(SignIn.exists()).toBe(true);
   });
 
   it('renders the child component when the user is signed in', async () => {
-    const Child = () => <p>Testing</p>
+    const Hey = () => <p>Hey!</p>;
     const wrapper = mount(
-      <MockedProvider mocks={signedInMock}>
-        <PleaseSignIn/>
-          <Child />
+      <MockedProvider mocks={signedInMocks}>
+        <PleaseSignIn>
+          <Hey />
+        </PleaseSignIn>
       </MockedProvider>
     );
-    
+
     await wait();
     wrapper.update();
-    expect(wrapper.contains(<Child/>)).toBe(true);
+    expect(wrapper.contains(<Hey />)).toBe(true);
   });
 });
