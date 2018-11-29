@@ -32,7 +32,7 @@ export default class RequestReset extends Component {
       >
         {(reset, { error, loading, called }) => {
           return (
-            <Form method="post" onSubmit={async e => {
+            <Form data-test="form" method="post" onSubmit={async e => {
               e.preventDefault();
               await reset(); 
               this.setState({ email: '' })

@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { perPage } from '../config';
 import PaginationStyles from './styles/PaginationStyles';
 
-const PAGINATION_QUERY = gql`
+export const PAGINATION_QUERY = gql`
   query PAGINATION_QUERY {
     itemsConnection {
       aggregate {
@@ -22,39 +22,47 @@ const PAGINATION_QUERY = gql`
 const Pagination = props => (
   <Query query={PAGINATION_QUERY}>
     {({ data, loading, error }) => {
-      if (loading) return <p>Loading...</p>
+      if (loading) return <p>Loading...</p>;
       const count = data.itemsConnection.aggregate.count;
       const pages = Math.ceil(count / perPage);
       const page = props.page;
       return (
-        <PaginationStyles>
+        <PaginationStyles data-test="pagination">
           <Head>
-            <title>Sick Fits! - Page {page} of {pages} </title>
+            <title>
+              Sick Fits! — Page {page} of {pages}
+            </title>
           </Head>
-          <Link 
+          <Link
             prefetch
             href={{
               pathname: 'items',
-              query: { page: page - 1 }
-          }}>
-            <a className="prev" aria-disabled={page <= 1}>{'<-'} Prev</a>
+              query: { page: page - 1 },
+            }}
+          >
+            <a className="prev" aria-disabled={page <= 1}>
+              ← Prev
+            </a>
           </Link>
-          <p>   
-            Page {props.page} of {pages}
+          <p>
+            Page {props.page} of
+            <span className="totalPages">{pages}</span>!
           </p>
           <p>{count} Items Total</p>
-          <Link 
+          <Link
             prefetch
             href={{
               pathname: 'items',
-              query: { page: page + 1 }
-          }}>
-            <a className="prev" aria-disabled={page >= pages}>Next{'->'} </a>
+              query: { page: page + 1 },
+            }}
+          >
+            <a className="next" aria-disabled={page >= pages}>
+              Next →
+            </a>
           </Link>
         </PaginationStyles>
-      )
+      );
     }}
-    </Query>
-)
-
+  </Query>
+);
 export default Pagination;

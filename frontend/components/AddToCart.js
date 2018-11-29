@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 
 import { CURRENT_USER_QUERY } from './User';
 
-const ADD_TO_CART = gql`
+export const ADD_TO_CART = gql`
   mutation addToCart($id: ID!) {
     addToCart(id: $id) {
       id
